@@ -152,38 +152,38 @@ void ProcessInput() {
     
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     if (keys[SDL_SCANCODE_UP]) {
-        player1_movement.y = 1.0f;
+        player1_movement.y = 3.0f;
     }
     else if (keys[SDL_SCANCODE_DOWN]) {
-        player1_movement.y = -1.0f;
+        player1_movement.y = -3.0f;
     }
     if (keys[SDL_SCANCODE_W]) {
-        player2_movement.y = 1.0f;
+        player2_movement.y = 3.0f;
     }
     else if (keys[SDL_SCANCODE_S]) {
-        player2_movement.y = -1.0f;
+        player2_movement.y = -3.0f;
     }
     
     // if holding down the buttons at the same time, they move at the same speed
-    if (glm::length(player1_movement) > 1.0f) {
+    if (glm::length(player1_movement) > 3.0f) {
         player1_movement = glm::normalize(player1_movement);
     }
-    else if (glm::length(player2_movement) > 1.0f) {
+    else if (glm::length(player2_movement) > 3.0f) {
         player2_movement = glm::normalize(player2_movement);
     }
     
     // limits the movement of players to prevent paddles from going outside the window
     if (player1_position.y > 3.3) {
-        player1_position.y -= 3.3;
+        player1_position.y = 3.3;
     }
     else if (player1_position.y < -3.3) {
-        player1_position.y += 3.3;
+        player1_position.y = -3.3;
     }
     if (player2_position.y > 3.3) {
-        player2_position.y -= 3.3;
+        player2_position.y = 3.3;
     }
     else if (player2_position.y < -3.3) {
-        player2_position.y += 3.3;
+        player2_position.y = -3.3;
     }
     
     if (star_position.x > 640){
@@ -192,8 +192,8 @@ void ProcessInput() {
         star_movement *= -1;
         
     }
-    else if (star_position.x < -3.3 ){
-        star_position.x = -3.3;
+    else if (star_position.x < 0 ){
+        star_position.x = 0;
         star_movement *= 1;
     }
     // Collision with the top of the screen
