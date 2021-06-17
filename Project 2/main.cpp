@@ -121,7 +121,7 @@ void ProcessInput() {
                         // Move the player right
                         
                         break;
-                        
+                    // pressing the spacebar will start the game
                     case SDLK_SPACE:
                         // Some sort of action
                         star_speed = 1.0f;
@@ -150,12 +150,7 @@ void ProcessInput() {
         
     }
     
-    
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
-    // pressing the spacebar will start the game
-    
-    //star_position += star_speed * star_movement;
-    
     if (keys[SDL_SCANCODE_UP]) {
         player1_movement.y = 1.0f;
     }
@@ -203,7 +198,7 @@ void ProcessInput() {
     }
     else if (star_position.x < -3.3 ){
         star_position.x = -3.3;
-        star_movement += 1;
+        star_movement *= 1;
     }
     // Collision with the end of the screen
     else if (star_position.y > 480 ){
@@ -218,9 +213,9 @@ void ProcessInput() {
         player2_movement.y = 0;
          */
     }
-    else if (star_position.y < -3.3 ){
-        star_position.y = -3.3;
-        star_movement += 1;
+    else if (star_position.y < 0 ){
+        star_position.y = 0;
+        star_movement *= 1;
         
         player1_movement.x = 0;
         player2_movement.x = 0;
@@ -277,7 +272,6 @@ void Update() {
     star_position += star_movement * star_speed * deltaTime;
     starMatrix = glm::mat4(1.0f);
     starMatrix = glm::translate(starMatrix, star_position);
-    //starMatrix = glm::translate(starMatrix, (0.0f, 0.0f, star_movement));
 }
 
 void drawPlayer1() {
