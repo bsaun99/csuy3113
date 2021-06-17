@@ -185,10 +185,6 @@ void ProcessInput() {
     else if (player2_position.y < -3.3) {
         player2_position.y += 3.3;
     }
-
-    //star_position.x += star_movement.x * star_speed;
-    //star_position.y += star_movement.y * star_speed;
-    
     
     if (star_position.x > 640){
         star_position.x = 640;
@@ -200,28 +196,16 @@ void ProcessInput() {
         star_position.x = -3.3;
         star_movement *= 1;
     }
-    // Collision with the end of the screen
+    // Collision with the top of the screen
     else if (star_position.y > 480 ){
-        star_position.y = 480;
+        //star_position.y = 480;
         star_movement *= -1;
-        
-        /*
-        player1_movement.x = 0;
-        player2_movement.x = 0;
-        
-        player1_movement.y = 0;
-        player2_movement.y = 0;
-         */
     }
     else if (star_position.y < 0 ){
-        star_position.y = 0;
-        star_movement *= 1;
-        
-        player1_movement.x = 0;
-        player2_movement.x = 0;
-        
-        player1_movement.y = 0;
-        player2_movement.y = 0;
+        //star_position.y = 0;
+        star_movement *= fabs(star_movement.x) ;
+        star_movement *= fabs(star_movement.y) ;
+        star_movement = glm::normalize(star_movement) ;
     }
     
     // Box-to-Box Collision
@@ -258,6 +242,8 @@ void Update() {
     float deltaTime = ticks - lastTicks;
     lastTicks = ticks;
     
+    star_position.x += star_movement.x * star_speed;
+    star_position.y += star_movement.y * star_speed;
     //star_speed += 3.0f;
     
     // Add (direction * units per second * elapsed time)
