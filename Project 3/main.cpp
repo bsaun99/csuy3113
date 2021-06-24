@@ -16,9 +16,11 @@
 
 #include "Entity.h"
 #define PLATFORM_COUNT 30
+#define LANDING_COUNT 2
 struct GameState {
     Entity *player;
     Entity *platforms;
+    Entity *landings;
 };
 
 GameState state;
@@ -88,31 +90,28 @@ void Initialize() {
     state.player->acceleration = glm::vec3(0, -0.1f, 0); // use this to change the speed he falls
     state.player->speed = 1.5f;
     state.player->textureID = LoadTexture("playerShip3_blue.png");
-    
-    /*
-    state.player->animRight = new int[4] {3, 7, 11, 15};
-    state.player->animLeft = new int[4] {1, 5, 9, 13};
-    state.player->animUp = new int[4] {2, 6, 10, 14};
-    state.player->animDown = new int[4] {0, 4, 8, 12};
-    
-    state.player->animIndices = state.player->animRight;
-    state.player->animFrames = 4;
-    state.player->animIndex = 0;
-    state.player->animTime = 0;
-    state.player->animCols = 4;
-    state.player->animRows = 4;
-    */
-     
     state.player->height = 1.0f;
     state.player->width = 1.0f;
-    
     state.player->jumpPower = 5.0f;
     
+    // Intitialize Platform
     state.platforms = new Entity[PLATFORM_COUNT];
     GLuint platformTextureID = LoadTexture("platformPack_tile007.png");
-    
     state.platforms->height = 1.0f;
     state.platforms->width = 1.0f;
+    
+    // Initialize Landing Pad
+    state.landings = new Entity[LANDING_COUNT];
+    GLuint landingTextureID = LoadTexture("platformPack_tile054.png");
+
+    
+    //===================Landing Pads===================
+    state.landings[0].textureID = landingTextureID;
+    state.landings[0].position = glm::vec3(-3.5, -2.3f, 0);
+    
+    state.landings[1].textureID = landingTextureID;
+    state.landings[1].position = glm::vec3(-2.5, -2.3f, 0);
+    
     
     //===================Horizontal tiles===================
     state.platforms[0].textureID = platformTextureID;
@@ -213,6 +212,10 @@ void Initialize() {
         state.platforms[i].Update(0, NULL, 0);
     }
     
+    for (int i=0; i< LANDING_COUNT; i++) {
+        state.landings[i].Update(0, NULL, 0);
+    }
+    
 }
 
 void ProcessInput() {
@@ -294,6 +297,9 @@ void Render() {
     
     for (int i =0; i<PLATFORM_COUNT; i++) {
         state.platforms[i].Render(&program);
+    }
+    for (int i =0; i<LANDING_COUNT; i++) {
+        state.landings[i].Render(&program);
     }
     glUseProgram(program.programID);
     state.player->Render(&program);
