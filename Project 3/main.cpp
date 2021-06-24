@@ -102,15 +102,15 @@ void Initialize() {
     
     // Initialize Landing Pad
     state.landings = new Entity[LANDING_COUNT];
-    GLuint landingTextureID = LoadTexture("platformPack_tile054.png");
+    GLuint landingTextureID = LoadTexture("platformPack_tile008.png");
 
     
     //===================Landing Pads===================
     state.landings[0].textureID = landingTextureID;
-    state.landings[0].position = glm::vec3(-3.5, -2.3f, 0);
+    state.landings[0].position = glm::vec3(-3.5, -3.25f, 0);
     
     state.landings[1].textureID = landingTextureID;
-    state.landings[1].position = glm::vec3(-2.5, -2.3f, 0);
+    state.landings[1].position = glm::vec3(-2.5, -3.25f, 0);
     
     
     //===================Horizontal tiles===================
