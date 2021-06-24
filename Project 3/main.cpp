@@ -15,7 +15,7 @@
 #include "stb_image.h"
 
 #include "Entity.h"
-#define PLATFORM_COUNT 26
+#define PLATFORM_COUNT 30
 struct GameState {
     Entity *player;
     Entity *platforms;
@@ -50,7 +50,6 @@ GLuint LoadTexture(const char* filePath) {
     return textureID;
 }
 
-
 void Initialize() {
     SDL_Init(SDL_INIT_VIDEO);
     displayWindow = SDL_CreateWindow("Lunar Lander", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_OPENGL);
@@ -74,7 +73,7 @@ void Initialize() {
     
     glUseProgram(program.programID);
     
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearColor(49.0f/255.0f, 69.0f/255.0f, 124.0f/255.0f, 0.7f); // background color
     glEnable(GL_BLEND);
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -84,9 +83,9 @@ void Initialize() {
     
     // Initialize Player
     state.player = new Entity();
-    state.player->position = glm::vec3(0);
+    state.player->position = glm::vec3(0,5,0);
     state.player->movement = glm::vec3(0);
-    state.player->acceleration = glm::vec3(0, -9.81f, 0); // use this to change the speed he falls
+    state.player->acceleration = glm::vec3(0, -0.2f, 0); // use this to change the speed he falls
     state.player->speed = 1.5f;
     state.player->textureID = LoadTexture("playerShip3_blue.png");
     
@@ -107,10 +106,14 @@ void Initialize() {
     state.player->height = 1.0f;
     state.player->width = 1.0f;
     
+    
     state.player->jumpPower = 5.0f;
     
     state.platforms = new Entity[PLATFORM_COUNT];
     GLuint platformTextureID = LoadTexture("platformPack_tile007.png");
+    
+    state.platforms->height = 1.0f;
+    state.platforms->width = 1.0f;
     
     //===================Horizontal tiles===================
     state.platforms[0].textureID = platformTextureID;
@@ -194,6 +197,18 @@ void Initialize() {
     state.platforms[25].textureID = platformTextureID;
     state.platforms[25].position = glm::vec3(4.5, 4.75f, 0);
     
+    //===================Other tiles===================
+    state.platforms[26].textureID = platformTextureID;
+    state.platforms[26].position = glm::vec3(2.0, 1.0f, 0);
+    
+    state.platforms[27].textureID = platformTextureID;
+    state.platforms[27].position = glm::vec3(1.0, 1.0f, 0);
+    
+    state.platforms[28].textureID = platformTextureID;
+    state.platforms[28].position = glm::vec3(-2.5, -0.25f, 0);
+    
+    state.platforms[29].textureID = platformTextureID;
+    state.platforms[29].position = glm::vec3(-3.5, -0.25f, 0);
     
     for (int i=0; i< PLATFORM_COUNT; i++) {
         state.platforms[i].Update(0, NULL, 0);
