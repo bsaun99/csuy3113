@@ -40,6 +40,7 @@ public:
     int animCols = 0;
     int animRows = 0;
     
+    
     bool isActive = true;
     
     bool collidedTop = false;

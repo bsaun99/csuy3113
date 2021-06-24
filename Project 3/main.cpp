@@ -85,7 +85,7 @@ void Initialize() {
     state.player = new Entity();
     state.player->position = glm::vec3(0,5,0);
     state.player->movement = glm::vec3(0);
-    state.player->acceleration = glm::vec3(0, -0.2f, 0); // use this to change the speed he falls
+    state.player->acceleration = glm::vec3(0, -0.1f, 0); // use this to change the speed he falls
     state.player->speed = 1.5f;
     state.player->textureID = LoadTexture("playerShip3_blue.png");
     
@@ -105,7 +105,6 @@ void Initialize() {
      
     state.player->height = 1.0f;
     state.player->width = 1.0f;
-    
     
     state.player->jumpPower = 5.0f;
     
