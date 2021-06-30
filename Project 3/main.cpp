@@ -21,6 +21,7 @@ struct GameState {
     Entity *player;
     Entity *platforms;
     Entity *landings;
+    Entity *font;
 };
 
 GameState state;
@@ -92,7 +93,6 @@ void Initialize() {
     state.player->textureID = LoadTexture("playerShip3_blue.png");
     state.player->height = 1.0f;
     state.player->width = 1.0f;
-    state.player->jumpPower = 5.0f;
     
     // Intitialize Platform
     state.platforms = new Entity[PLATFORM_COUNT];
@@ -103,6 +103,10 @@ void Initialize() {
     // Initialize Landing Pad
     state.landings = new Entity[LANDING_COUNT];
     GLuint landingTextureID = LoadTexture("platformPack_tile008.png");
+    
+    // Initialize Font
+    state.font = new Entity();
+    GLuint fontTextureID = LoadTexture("font 1.png");
 
     
     //===================Landing Pads===================
@@ -241,9 +245,6 @@ void ProcessInput() {
                         break;
                         
                     case SDLK_SPACE:
-                        if (state.player->collidedBottom) {
-                           state.player->jump = true;
-                        }
                         break;
                 }
                 break; // SDL_KEYDOWN
@@ -254,16 +255,20 @@ void ProcessInput() {
     
     if (keys[SDL_SCANCODE_LEFT]) {
         state.player->movement.x = -1.0f;
-        //state.player->animIndices = state.player->animLeft;
+        //state.player->acceleration.x = -1.0f;
     }
     else if (keys[SDL_SCANCODE_RIGHT]) {
         state.player->movement.x = 1.0f;
-        //state.player->animIndices = state.player->animRight;
+        //state.player->acceleration.x = 1.0f;
     }
     
     if (glm::length(state.player->movement) > 1.0f) {
         state.player->movement = glm::normalize(state.player->movement);
     }
+    
+    //if (glm::length(state.player->acceleration) > 1.0f) {
+        //state.player->acceleration = glm::normalize(state.player->acceleration);
+    //}
     
 }
 
@@ -303,6 +308,8 @@ void Render() {
     }
     glUseProgram(program.programID);
     state.player->Render(&program);
+    
+    DrawText(&program, fontTextureID, "Hello!", 1, -0.5f, glm::vec3(-4.25f, 3, 0));
     
     
     SDL_GL_SwapWindow(displayWindow);

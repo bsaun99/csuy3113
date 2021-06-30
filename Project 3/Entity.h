@@ -22,8 +22,9 @@ public:
     float width = 1;
     float height = 1;
     
-    bool jump = false;
-    float jumpPower = 0;
+    vector<float> vertices;
+    vector<float> texCoords;
+    
     GLuint textureID;
     
     glm::mat4 modelMatrix;
@@ -57,4 +58,5 @@ public:
     void Update(float deltaTime, Entity *platforms, int platformCount);
     void Render(ShaderProgram *program);
     void DrawSpriteFromTextureAtlas(ShaderProgram *program, GLuint textureID, int index);
+    void DrawText(ShaderProgram *program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position);
 };
