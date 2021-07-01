@@ -369,25 +369,21 @@ void Render() {
         DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
     else if (state.player->collidedBottom == true){
-        if (state.player->position.x >= -3.5f && state.player->position.x <= -2.5f && state.player->position.y == -1.5f){
-            state.player->isActive = false;
+        state.player->isActive = false;
+        
+        if (state.landings->isActive == true){
             DrawText(&program, fontTextureID, "Mission Successful", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
         }
-        state.player->isActive = false;
-        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+        else if (state.platforms->isActive == true){
+            DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+        }
+        
     }
     else if (state.player->collidedTop == true){
         state.player->isActive = false;
         DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
-    /*
-    //===================Landing Pads===================
-    state.landings[0].textureID = landingTextureID;
-    state.landings[0].position = glm::vec3(-3.5, -3.25f, 0);
-    
-    state.landings[1].textureID = landingTextureID;
-    state.landings[1].position = glm::vec3(-2.5, -3.25f, 0);
-     */
+
     SDL_GL_SwapWindow(displayWindow);
 }
 
