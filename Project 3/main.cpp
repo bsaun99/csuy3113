@@ -132,6 +132,9 @@ void Initialize() {
     state.platforms[2].textureID = platformTextureID;
     state.platforms[2].position = glm::vec3(-2.5, -3.25f, 0);
     
+    state.platforms[3].textureID = platformTextureID;
+    state.platforms[3].position = glm::vec3(-3.5, -0.25f, 0);
+    
     state.platforms[4].textureID = platformTextureID;
     state.platforms[4].position = glm::vec3(-0.5, -3.25f, 0);
     
@@ -210,9 +213,6 @@ void Initialize() {
     
     state.platforms[28].textureID = platformTextureID;
     state.platforms[28].position = glm::vec3(-2.5, -0.25f, 0);
-    
-    state.platforms[3].textureID = platformTextureID;
-    state.platforms[3].position = glm::vec3(-3.5, -0.25f, 0);
     
     for (int i=0; i< PLATFORM_COUNT; i++) {
         state.platforms[i].Update(0, NULL, 0);
@@ -363,7 +363,6 @@ void Render() {
     }
     else if (state.player->collidedBottom == true){
         state.player->isActive = false;
-        
         if (state.landings->isActive == true){
             DrawText(&program, fontTextureID, "Mission Successful", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
         }
