@@ -10,6 +10,7 @@
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "ShaderProgram.h"
+#include <vector>
 
 class Entity {
 public:
@@ -22,8 +23,8 @@ public:
     float width = 1;
     float height = 1;
     
-    vector<float> vertices;
-    vector<float> texCoords;
+    std::vector<float> vertices;
+    std::vector<float> texCoords;
     
     GLuint textureID;
     

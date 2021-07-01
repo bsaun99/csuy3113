@@ -32,6 +32,8 @@ bool gameIsRunning = true;
 ShaderProgram program;
 glm::mat4 viewMatrix, modelMatrix, projectionMatrix;
 
+GLuint fontTextureID;
+
 GLuint LoadTexture(const char* filePath) {
     int w, h, n;
     unsigned char* image = stbi_load(filePath, &w, &h, &n, STBI_rgb_alpha);
@@ -52,6 +54,7 @@ GLuint LoadTexture(const char* filePath) {
     stbi_image_free(image);
     return textureID;
 }
+
 
 void Initialize() {
     SDL_Init(SDL_INIT_VIDEO);
@@ -105,8 +108,7 @@ void Initialize() {
     GLuint landingTextureID = LoadTexture("platformPack_tile008.png");
     
     // Initialize Font
-    state.font = new Entity();
-    GLuint fontTextureID = LoadTexture("font 1.png");
+    fontTextureID = LoadTexture("font1.png");
 
     
     //===================Landing Pads===================
@@ -255,11 +257,11 @@ void ProcessInput() {
     
     if (keys[SDL_SCANCODE_LEFT]) {
         state.player->movement.x = -1.0f;
-        //state.player->acceleration.x = -1.0f;
+        //state.player->acceleration.x += -1.0f;
     }
     else if (keys[SDL_SCANCODE_RIGHT]) {
         state.player->movement.x = 1.0f;
-        //state.player->acceleration.x = 1.0f;
+        //state.player->acceleration.x += 1.0f;
     }
     
     if (glm::length(state.player->movement) > 1.0f) {
@@ -296,6 +298,54 @@ void Update() {
     accumulator = deltaTime;
 }
 
+void DrawText(ShaderProgram *program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position) {
+    float width = 1.0f / 16.0f;
+    float height = 1.0f / 16.0f;
+    
+    std::vector<float> vertices;
+    std::vector<float> texCoords;
+    
+    for(int i = 0; i < text.size(); i++) {
+        
+        int index = (int)text[i];
+        float offset = (size + spacing) * i;
+        float u = (float)(index % 16) / 16.0f;
+        float v = (float)(index / 16) / 16.0f;
+        
+        vertices.insert(vertices.end(), {
+            offset + (-0.5f * size), 0.5f * size,
+            offset + (-0.5f * size), -0.5f * size,
+            offset + (0.5f * size), 0.5f * size,
+            offset + (0.5f * size), -0.5f * size,
+            offset + (0.5f * size), 0.5f * size,
+            offset + (-0.5f * size), -0.5f * size,
+        });
+        texCoords.insert(texCoords.end(), {
+            u, v,
+            u, v + height,
+            u + width, v,
+            u + width, v + height,
+            u + width, v,
+            u, v + height,
+        });
+    }
+    program->SetModelMatrix(modelMatrix);
+    
+    glUseProgram(program->programID);
+    
+    glVertexAttribPointer(program->positionAttribute, 2, GL_FLOAT, false, 0, vertices.data());
+    glEnableVertexAttribArray(program->positionAttribute);
+    
+    glVertexAttribPointer(program->texCoordAttribute, 2, GL_FLOAT, false, 0, texCoords.data());
+    glEnableVertexAttribArray(program->texCoordAttribute);
+    
+    glBindTexture(GL_TEXTURE_2D, fontTextureID);
+    glDrawArrays(GL_TRIANGLES, 0, (int)(text.size() * 6));
+    
+    glDisableVertexAttribArray(program->positionAttribute);
+    glDisableVertexAttribArray(program->texCoordAttribute);
+}
+
 
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -309,9 +359,26 @@ void Render() {
     glUseProgram(program.programID);
     state.player->Render(&program);
     
-    DrawText(&program, fontTextureID, "Hello!", 1, -0.5f, glm::vec3(-4.25f, 3, 0));
-    
-    
+    if (state.player->collidedRight == true) {
+        state.player->isActive = false;
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+    }
+    else if (state.player->collidedLeft == true){
+        state.player->isActive = false;
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+    }
+    else if (state.player->collidedBottom == true){
+        state.player->isActive = false;
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+    }
+    else if (state.player->collidedTop == true){
+        state.player->isActive = false;
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+    }
+    else if (state.landings->collidedTop == true){
+        DrawText(&program, fontTextureID, "Mission Successful", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+    }
+
     SDL_GL_SwapWindow(displayWindow);
 }
 
