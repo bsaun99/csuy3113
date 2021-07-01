@@ -15,8 +15,8 @@
 #include "stb_image.h"
 
 #include "Entity.h"
-#define PLATFORM_COUNT 30
-#define LANDING_COUNT 2
+#define PLATFORM_COUNT 29
+#define LANDING_COUNT 3
 struct GameState {
     Entity *player;
     Entity *platforms;
@@ -89,9 +89,9 @@ void Initialize() {
     
     // Initialize Player
     state.player = new Entity();
-    state.player->position = glm::vec3(0,5,0);
+    state.player->position = glm::vec3(0,4.5,0);
     state.player->movement = glm::vec3(0);
-    state.player->acceleration = glm::vec3(0, -0.1f, 0); // use this to change the speed he falls
+    state.player->acceleration = glm::vec3(0, -0.05f, 0); // use this to change the speed he falls
     state.player->speed = 1.5f;
     state.player->textureID = LoadTexture("playerShip3_blue.png");
     state.player->height = 1.0f;
@@ -119,6 +119,8 @@ void Initialize() {
     state.landings[1].textureID = landingTextureID;
     state.landings[1].position = glm::vec3(-2.5, -3.25f, 0);
     
+    state.landings[2].textureID = landingTextureID;
+    state.landings[2].position = glm::vec3(-1.5, -3.25f, 0);
     
     //===================Horizontal tiles===================
     state.platforms[0].textureID = platformTextureID;
@@ -129,9 +131,6 @@ void Initialize() {
     
     state.platforms[2].textureID = platformTextureID;
     state.platforms[2].position = glm::vec3(-2.5, -3.25f, 0);
-    
-    state.platforms[3].textureID = platformTextureID;
-    state.platforms[3].position = glm::vec3(-1.5, -3.25f, 0);
     
     state.platforms[4].textureID = platformTextureID;
     state.platforms[4].position = glm::vec3(-0.5, -3.25f, 0);
@@ -212,8 +211,8 @@ void Initialize() {
     state.platforms[28].textureID = platformTextureID;
     state.platforms[28].position = glm::vec3(-2.5, -0.25f, 0);
     
-    state.platforms[29].textureID = platformTextureID;
-    state.platforms[29].position = glm::vec3(-3.5, -0.25f, 0);
+    state.platforms[3].textureID = platformTextureID;
+    state.platforms[3].position = glm::vec3(-3.5, -0.25f, 0);
     
     for (int i=0; i< PLATFORM_COUNT; i++) {
         state.platforms[i].Update(0, NULL, 0);
@@ -257,21 +256,15 @@ void ProcessInput() {
     const Uint8 *keys = SDL_GetKeyboardState(NULL);
     
     if (keys[SDL_SCANCODE_LEFT]) {
-        state.player->movement.x = -1.0f;
-        //state.player->acceleration.x += -1.0f;
+        state.player->acceleration.x = -1.0f;
     }
     else if (keys[SDL_SCANCODE_RIGHT]) {
-        state.player->movement.x = 1.0f;
-        //state.player->acceleration.x += 1.0f;
+        state.player->acceleration.x = 1.0f;
     }
-    
-    if (glm::length(state.player->movement) > 1.0f) {
-        state.player->movement = glm::normalize(state.player->movement);
+
+    if (glm::length(state.player->acceleration) > 1.0f) {
+        state.player->acceleration = glm::normalize(state.player->acceleration);
     }
-    
-    //if (glm::length(state.player->acceleration) > 1.0f) {
-        //state.player->acceleration = glm::normalize(state.player->acceleration);
-    //}
     
 }
 

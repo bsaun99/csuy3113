@@ -80,7 +80,7 @@ void Entity::Update(float deltaTime, Entity *platforms, int platformCount)
     collidedLeft = false;
     collidedRight = false;
     
-    velocity.x = movement.x * speed;
+    //velocity.x = movement.x * speed;
     velocity += acceleration * deltaTime;
     
     position.y += velocity.y * deltaTime; // Move on Y
