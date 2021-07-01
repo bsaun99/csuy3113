@@ -79,7 +79,7 @@ void Initialize() {
     
     glUseProgram(program.programID);
     
-    glClearColor(49.0f/255.0f, 69.0f/255.0f, 124.0f/255.0f, 0.7f); // background color
+    glClearColor(27.0f/255.0f, 22.0f/255.0f, 33.0f/255.0f, 0.89f); // background color
     glEnable(GL_BLEND);
     
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -99,7 +99,8 @@ void Initialize() {
     
     // Intitialize Platform
     state.platforms = new Entity[PLATFORM_COUNT];
-    GLuint platformTextureID = LoadTexture("platformPack_tile007.png");
+    //GLuint platformTextureID = LoadTexture("platformPack_tile007.png");
+    GLuint platformTextureID = LoadTexture("obsidian.png");
     state.platforms->height = 1.0f;
     state.platforms->width = 1.0f;
     
@@ -361,24 +362,32 @@ void Render() {
     
     if (state.player->collidedRight == true) {
         state.player->isActive = false;
-        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
     else if (state.player->collidedLeft == true){
         state.player->isActive = false;
-        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
     else if (state.player->collidedBottom == true){
+        if (state.player->position.x >= -3.5f && state.player->position.x <= -2.5f && state.player->position.y == -1.5f){
+            state.player->isActive = false;
+            DrawText(&program, fontTextureID, "Mission Successful", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+        }
         state.player->isActive = false;
-        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
     else if (state.player->collidedTop == true){
         state.player->isActive = false;
-        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(-4.5f, 3.3, 0));
+        DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
-    else if (state.landings->collidedTop == true){
-        DrawText(&program, fontTextureID, "Mission Successful", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
-    }
-
+    /*
+    //===================Landing Pads===================
+    state.landings[0].textureID = landingTextureID;
+    state.landings[0].position = glm::vec3(-3.5, -3.25f, 0);
+    
+    state.landings[1].textureID = landingTextureID;
+    state.landings[1].position = glm::vec3(-2.5, -3.25f, 0);
+     */
     SDL_GL_SwapWindow(displayWindow);
 }
 
