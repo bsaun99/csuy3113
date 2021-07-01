@@ -362,14 +362,14 @@ void Render() {
         DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
     else if (state.player->collidedBottom == true){
-        state.player->isActive = false;
-        if (state.landings->isActive == true){
+        if (state.player->CheckCollision(state.landings) == true){
+            state.player->isActive = false;
             DrawText(&program, fontTextureID, "Mission Successful", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
         }
-        else if (state.platforms->isActive == true){
+        else if (state.player->CheckCollision(state.platforms) == true){
+            state.player->isActive = false;
             DrawText(&program, fontTextureID, "Mission Failed", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
         }
-        
     }
     else if (state.player->collidedTop == true){
         state.player->isActive = false;
