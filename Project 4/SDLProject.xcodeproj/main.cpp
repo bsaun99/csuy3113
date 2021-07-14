@@ -99,6 +99,7 @@ void Initialize() {
     state.player->entityType = PLAYER;
     state.player->position = glm::vec3(-3.5,0,0);
     state.player->movement = glm::vec3(0);
+    state.player->velocity = glm::vec3(0);
     state.player->acceleration = glm::vec3(0, -9.81f, 0); // use this to change the speed he falls
     state.player->speed = 1.5f;
     state.player->textureID = LoadTexture("betty.png");
@@ -118,7 +119,7 @@ void Initialize() {
     state.player->height = 0.8f;
     state.player->width = 0.8f;
     
-    state.player->jumpPower = 5.0f;
+    state.player->jumpPower = 7.0f;
     
     state.platforms = new Entity[PLATFORM_COUNT];
     GLuint platformTextureID = LoadTexture("obsidian.png");
@@ -405,6 +406,11 @@ void Render() {
     }
     else if (state.player->playerType == WINNER) {
         DrawText(&program, fontTextureID, "YOU WIN", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+    }
+    
+    if (state.player->collidedBottom == true && state.enemies->collidedTop == true) {
+        state.enemies->isActive = false;
+        state.enemies->aiState = IDLE;
     }
 
     //drawLaser();

@@ -166,7 +166,7 @@ void Entity::AIWaitAndGo(Entity* player) {
                 movement = glm::vec3(1,0,0);
             }
             break;
-        
+            
         case ATTACKING:
             if (CheckCollision(player) == true) {
                 aiState = IDLE;
