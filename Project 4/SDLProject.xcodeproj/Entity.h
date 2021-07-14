@@ -14,7 +14,7 @@
 enum EntityType {PLAYER, PLATFORM, ENEMY};
 
 enum PlayerState {ALIVE, DEAD};
-enum PlayerType {WINNER, LOSER};
+enum PlayerType {WINNER, LOSER, IN_PROGRESS};
 
 enum AIType {WALKER, WAITANDGO, PATROLLER, FLYER, SHOOTER};
 enum AIState {IDLE, WALKING, ATTACKING};
@@ -77,7 +77,6 @@ public:
     void DrawSpriteFromTextureAtlas(ShaderProgram *program, GLuint textureID, int index);
     void DrawText(ShaderProgram *program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position);
     
-    void GameState(Entity* player);
     void GameOver(Entity* player, Entity* enemy);
     void AI(Entity* player);
     void AIWalker();

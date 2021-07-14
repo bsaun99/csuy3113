@@ -17,7 +17,7 @@
 #include "stb_image.h"
 
 #include "Entity.h"
-#define PLATFORM_COUNT 11
+#define PLATFORM_COUNT 16
 
 #define ENEMY_COUNT 2
 
@@ -25,6 +25,7 @@ struct GameState {
     Entity *player;
     Entity *platforms;
     Entity *enemies;
+    Entity *font;
 };
 
 GameState state;
@@ -96,7 +97,7 @@ void Initialize() {
     // Initialize Player
     state.player = new Entity();
     state.player->entityType = PLAYER;
-    state.player->position = glm::vec3(-4,0,0);
+    state.player->position = glm::vec3(-3.5,0,0);
     state.player->movement = glm::vec3(0);
     state.player->acceleration = glm::vec3(0, -9.81f, 0); // use this to change the speed he falls
     state.player->speed = 1.5f;
@@ -120,7 +121,7 @@ void Initialize() {
     state.player->jumpPower = 5.0f;
     
     state.platforms = new Entity[PLATFORM_COUNT];
-    GLuint platformTextureID = LoadTexture("platformPack_tile001.png");
+    GLuint platformTextureID = LoadTexture("obsidian.png");
     
     /*
     for (int i=0; i < 11; i++) {
@@ -162,25 +163,32 @@ void Initialize() {
     state.platforms[9].position = glm::vec3(4.5, -3.25f, 0);
     
     state.platforms[10].textureID = platformTextureID;
-    state.platforms[10].position = glm::vec3(-3.2, -1.25f, 0);
+    state.platforms[10].position = glm::vec3(-1.2, -1.25f, 0);
     
-    /*
-    state.platforms->entityType = PLATFORM;
+    state.platforms[11].textureID = platformTextureID;
+    state.platforms[11].position = glm::vec3(-2.2, -1.25f, 0);
+    
     state.platforms[12].textureID = platformTextureID;
-    state.platforms[12].position = glm::vec3(0, 0.3, 0);
+    state.platforms[12].position = glm::vec3(-3.2, -1.25f, 0);
     
     state.platforms[13].textureID = platformTextureID;
-    state.platforms[13].position = glm::vec3(1, 0.3, 0);
+    state.platforms[13].position = glm::vec3(0, 0.3, 0);
     
     state.platforms[14].textureID = platformTextureID;
-    state.platforms[14].position = glm::vec3(2, 0.3, 0);
-    */
+    state.platforms[14].position = glm::vec3(1, 0.3, 0);
+    
+    state.platforms[15].textureID = platformTextureID;
+    state.platforms[15].position = glm::vec3(2, 0.3, 0);
+    
+
     for (int i=0; i< PLATFORM_COUNT; i++) {
         state.platforms[i].Update(0, NULL, NULL, NULL, 0, 0);
     }
     
     state.enemies = new Entity[ENEMY_COUNT];
-    state.enemies->entityType = ENEMY;
+    state.enemies[0].entityType = ENEMY;
+    
+    // First Enemy
     GLint enemyTextureID = LoadTexture("32x32-bat-sprite.png");
     
     state.enemies[0].animRight = new int[4] {12, 13, 14, 15};
@@ -188,22 +196,15 @@ void Initialize() {
     state.enemies[0].animUp = new int[4] {0, 1, 2, 3};
     state.enemies[0].animDown = new int[4] {0, 1, 2, 3};
     
-    /*
-    state.enemies[1].animRight = new int[4] {4, 5, 6, 7};
-    state.enemies[1].animLeft = new int[4] {12, 13, 14, 15};
-    state.enemies[1].animUp = new int[4] {0, 1, 2, 3};
-    state.enemies[1].animDown = new int[4] {0, 1, 2, 3};
-    */
+    state.enemies[0].animIndices = state.enemies->animRight;
+    state.enemies[0].animFrames = 4;
+    state.enemies[0].animIndex = 0;
+    state.enemies[0].animTime = 0;
+    state.enemies[0].animCols = 4;
+    state.enemies[0].animRows = 4;
     
-    state.enemies->animIndices = state.enemies->animRight;
-    state.enemies->animFrames = 4;
-    state.enemies->animIndex = 0;
-    state.enemies->animTime = 0;
-    state.enemies->animCols = 4;
-    state.enemies->animRows = 4;
-    
-    state.enemies->height = 0.8f;
-    state.enemies->width = 0.8f;
+    state.enemies[0].height = 0.8f;
+    state.enemies[0].width = 0.8f;
     
     state.enemies[0].textureID = enemyTextureID;
     state.enemies[0].position = glm::vec3(2, 1.35, 0);
@@ -211,13 +212,45 @@ void Initialize() {
     state.enemies[0].aiType = FLYER;
     state.enemies[0].aiState = WALKING;
     
+    // Second enemy
+    state.enemies[1].entityType = ENEMY;
     GLint enemy2TextureID = LoadTexture("chewbacca.png");
     state.enemies[1].textureID = enemy2TextureID;
-    state.enemies[1].position = glm::vec3(4, -2.25, 0);
+    
+    state.enemies[1].position = glm::vec3(4, -2.35, 0);
     state.enemies->speed = 1;
     state.enemies[1].aiType = FLYER;
     state.enemies[1].aiState = IDLE;
     
+    state.enemies[1].height = 0.8f;
+    state.enemies[1].width = 0.8f;
+    
+    /*
+    // Third enemy
+    state.enemies[2].entityType = ENEMY;
+    GLint enemy3TextureID = LoadTexture("monster.png");
+    state.enemies[2].textureID = enemy3TextureID;
+    
+    state.enemies[2].animRight = new int[3] {3, 4, 5};
+    state.enemies[2].animLeft = new int[3] {9, 10, 11};
+    state.enemies[2].animUp = new int[3] {0, 1, 2};
+    state.enemies[2].animDown = new int[3] {6, 7, 8};
+    
+    state.enemies[2].animIndices = state.enemies->animRight;
+    state.enemies[2].animFrames = 3;
+    state.enemies[2].animIndex = 0;
+    state.enemies[2].animTime = 0;
+    state.enemies[2].animCols = 3;
+    state.enemies[2].animRows = 4;
+    
+    state.enemies[2].position = glm::vec3(3, -2.35, 0);
+    state.enemies->speed = 1;
+    state.enemies[2].aiType = WAITANDGO;
+    state.enemies[2].aiState = WALKING;
+    
+    state.enemies[2].height = 0.8f;
+    state.enemies[2].width = 0.8f;
+    */
     
 }
 
@@ -366,6 +399,13 @@ void Render() {
     
     glUseProgram(program.programID);
     state.player->Render(&program);
+    
+    if (state.player->playerType == LOSER) {
+        DrawText(&program, fontTextureID, "YOU LOSE", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+    }
+    else if (state.player->playerType == WINNER) {
+        DrawText(&program, fontTextureID, "YOU WIN", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+    }
 
     //drawLaser();
     

@@ -77,6 +77,9 @@ void Entity::GameOver(Entity* player, Entity* enemy) {
             if (enemy->isActive == false && player->isActive == true) {
                 playerType = WINNER;
             }
+            else if (enemy->isActive == true && player->isActive == true) {
+                playerType = IN_PROGRESS;
+            }
             break;
         
         case DEAD:
@@ -84,23 +87,8 @@ void Entity::GameOver(Entity* player, Entity* enemy) {
                 playerType = LOSER;
             }
             break;
-            
     }
 }
-
-/*
-void Entity::GameState(Entity *player) {
-    switch(playerType){
-        case WINNER:
-            DrawText(&program, fontTextureID, "You Win", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
-            break;
-            
-        case LOSER:
-            DrawText(&program, fontTextureID, "You Lose", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
-            break;
-    }
-}
-*/
 
 void Entity::AI(Entity* player) {
     switch(aiType){
@@ -133,21 +121,21 @@ void Entity::AIWalker() {
 
 void Entity::AIPatroller() {
     movement = glm::vec3(-1,0,0);
-    if (position.x >= 4.5) {
-        movement.x = -1.0f ;
+    if (position.x >= 4.5f) {
+        movement.x = -1.0 ;
     }
-    else if (position.x <= -4.5){
-        movement.x = 1.0f ;
+    else if (position.x <= -4.5f){
+        movement.x = 1.0 ;
     }
 }
 
 void Entity::AIFlyer() {
-    movement = glm::vec3(0,-1,0);
-    if (position.y >= 4.5) {
-        movement.y = -1.0f ;
+    movement = glm::vec3(0,1,0);
+    if (position.y >= 4.5f) {
+        movement.y = -1.0 ;
     }
-    else if (position.y <= 1.5){
-        movement.y = 1.0f ;
+    else if (position.y <= 1.5f){
+        movement.y = 1.0 ;
     }
 }
 
@@ -180,13 +168,10 @@ void Entity::AIWaitAndGo(Entity* player) {
             break;
         
         case ATTACKING:
-            if (player->position.x == position.x) {
+            if (CheckCollision(player) == true) {
                 aiState = IDLE;
-                playerState = DEAD;
-            }
-            else if (player->position.y == position.y) {
-                aiState = IDLE;
-                playerState = DEAD;
+                player->isActive = false;
+                player->playerState = DEAD;
             }
             break;
     }
