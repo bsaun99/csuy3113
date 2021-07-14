@@ -17,9 +17,9 @@
 #include "stb_image.h"
 
 #include "Entity.h"
-#define PLATFORM_COUNT 16
+#define PLATFORM_COUNT 20
 
-#define ENEMY_COUNT 2
+#define ENEMY_COUNT 3
 
 struct GameState {
     Entity *player;
@@ -173,14 +173,25 @@ void Initialize() {
     state.platforms[12].position = glm::vec3(-3.2, -1.25f, 0);
     
     state.platforms[13].textureID = platformTextureID;
-    state.platforms[13].position = glm::vec3(0, 0.3, 0);
+    state.platforms[13].position = glm::vec3(1, 0.3, 0);
     
     state.platforms[14].textureID = platformTextureID;
-    state.platforms[14].position = glm::vec3(1, 0.3, 0);
+    state.platforms[14].position = glm::vec3(2, 0.3, 0);
     
     state.platforms[15].textureID = platformTextureID;
-    state.platforms[15].position = glm::vec3(2, 0.3, 0);
+    state.platforms[15].position = glm::vec3(3, 0.3, 0);
     
+    state.platforms[16].textureID = platformTextureID;
+    state.platforms[16].position = glm::vec3(5, 1.3, 0);
+    
+    state.platforms[17].textureID = platformTextureID;
+    state.platforms[17].position = glm::vec3(-5, 1.3, 0);
+    
+    state.platforms[18].textureID = platformTextureID;
+    state.platforms[18].position = glm::vec3(5, 2.3, 0);
+    
+    state.platforms[19].textureID = platformTextureID;
+    state.platforms[19].position = glm::vec3(-5, 2.3, 0);
 
     for (int i=0; i< PLATFORM_COUNT; i++) {
         state.platforms[i].Update(0, NULL, NULL, NULL, 0, 0);
@@ -204,13 +215,13 @@ void Initialize() {
     state.enemies[0].animCols = 4;
     state.enemies[0].animRows = 4;
     
-    state.enemies[0].height = 0.8f;
-    state.enemies[0].width = 0.8f;
+    state.enemies[0].height = 0.7f;
+    state.enemies[0].width = 0.7f;
     
     state.enemies[0].textureID = enemyTextureID;
-    state.enemies[0].position = glm::vec3(2, 1.35, 0);
+    state.enemies[0].position = glm::vec3(-3, 1.35, 0);
     state.enemies->speed = 1;
-    state.enemies[0].aiType = FLYER;
+    state.enemies[0].aiType = WALKER;
     state.enemies[0].aiState = WALKING;
     
     // Second enemy
@@ -226,7 +237,7 @@ void Initialize() {
     state.enemies[1].height = 0.8f;
     state.enemies[1].width = 0.8f;
     
-    /*
+    
     // Third enemy
     state.enemies[2].entityType = ENEMY;
     GLint enemy3TextureID = LoadTexture("monster.png");
@@ -234,7 +245,7 @@ void Initialize() {
     
     state.enemies[2].animRight = new int[3] {3, 4, 5};
     state.enemies[2].animLeft = new int[3] {9, 10, 11};
-    state.enemies[2].animUp = new int[3] {0, 1, 2};
+    state.enemies[2].animUp = new int[3] {0, 1, 2}; 
     state.enemies[2].animDown = new int[3] {6, 7, 8};
     
     state.enemies[2].animIndices = state.enemies->animRight;
@@ -244,14 +255,15 @@ void Initialize() {
     state.enemies[2].animCols = 3;
     state.enemies[2].animRows = 4;
     
-    state.enemies[2].position = glm::vec3(3, -2.35, 0);
+    state.enemies[2].position = glm::vec3(3, 1.3, 0);
     state.enemies->speed = 1;
     state.enemies[2].aiType = WAITANDGO;
     state.enemies[2].aiState = WALKING;
     
     state.enemies[2].height = 0.8f;
     state.enemies[2].width = 0.8f;
-    */
+     
+
     
 }
 
@@ -301,6 +313,20 @@ void ProcessInput() {
     
     if (glm::length(state.player->movement) > 1.0f) {
         state.player->movement = glm::normalize(state.player->movement);
+    }
+    
+    if (state.enemies[0].collidedLeft) {
+        state.enemies[0].movement.x = -1;
+    }
+    else if (state.enemies[0].collidedRight) {
+        state.enemies[0].movement.x = 1;
+    }
+    
+    for (int i=0; i<ENEMY_COUNT; i++) {
+        if (state.player->collidedBottom == true && state.enemies[i].collidedTop == true) {
+            state.enemies[i].isActive = false;
+            state.enemies[i].aiState = IDLE;
+        }
     }
     
 }
@@ -408,10 +434,6 @@ void Render() {
         DrawText(&program, fontTextureID, "YOU WIN", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
     
-    if (state.player->collidedBottom == true && state.enemies->collidedTop == true) {
-        state.enemies->isActive = false;
-        state.enemies->aiState = IDLE;
-    }
 
     //drawLaser();
     
