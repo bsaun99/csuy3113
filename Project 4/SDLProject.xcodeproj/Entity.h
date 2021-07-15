@@ -16,8 +16,8 @@ enum EntityType {PLAYER, PLATFORM, ENEMY};
 enum PlayerState {ALIVE, DEAD};
 enum PlayerType {WINNER, LOSER, IN_PROGRESS};
 
-enum AIType {WALKER, WAITANDGO, PATROLLER, FLYER, SHOOTER};
-enum AIState {IDLE, WALKING, ATTACKING};
+enum AIType {WALKER, WAITANDGO, PATROLLER, FLYER, JUMPER};
+enum AIState {IDLE, MOVING, ATTACKING};
 
 class Entity {
 public:
@@ -82,6 +82,6 @@ public:
     void AIWalker();
     void AIPatroller();
     void AIFlyer();
-    void AIShooter();
+    void AIJumper();
     void AIWaitAndGo(Entity* player) ;
 };

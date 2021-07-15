@@ -108,8 +108,8 @@ void Entity::AI(Entity* player) {
             AIFlyer();
             break;
             
-        case SHOOTER:
-            AIShooter();
+        case JUMPER:
+            AIJumper();
             break;
     }
 }
@@ -139,26 +139,20 @@ void Entity::AIFlyer() {
     }
 }
 
-void Entity::AIShooter() {
-    if (laser > -5.3) {
-        laser -= 6.0f;
-    }
-    else {
-        laser += 11.8f ; // returns the laser back to Chewbaccas weapon to make it appear like he is constantly shooting
-    }
-    laserMatrix = glm::mat4(1.0f); //setting the model matrix to the identity matrix
-    laserMatrix = glm::translate(laserMatrix, glm::vec3(laser, -0.4f, 0.0f));
+void Entity::AIJumper() {
+    jump = false;
+    velocity.y += jumpPower;
 }
 
 void Entity::AIWaitAndGo(Entity* player) {
     switch(aiState) {
         case IDLE:
             if (glm::distance(position,player->position) < 3.0f){
-                aiState = WALKING;
+                aiState = MOVING;
             }
             break;
         
-        case WALKING:
+        case MOVING:
             if (player->position.x < position.x){
                 movement = glm::vec3(-1,0,0);
             }

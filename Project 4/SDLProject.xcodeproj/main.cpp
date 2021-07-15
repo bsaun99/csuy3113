@@ -124,14 +124,6 @@ void Initialize() {
     state.platforms = new Entity[PLATFORM_COUNT];
     GLuint platformTextureID = LoadTexture("obsidian.png");
     
-    /*
-    for (int i=0; i < 11; i++) {
-        state.platforms->entityType = PLATFORM;
-        state.platforms[i].textureID = platformTextureID;
-        state.platforms[i].position = glm::vec3(-5 + i, -3.25f, 0);
-    }
-     */
-    
     state.platforms->entityType = PLATFORM;
     state.platforms[0].textureID = platformTextureID;
     state.platforms[0].position = glm::vec3(-4.5, -3.25f, 0);
@@ -222,7 +214,7 @@ void Initialize() {
     state.enemies[0].position = glm::vec3(-3, 1.35, 0);
     state.enemies->speed = 1;
     state.enemies[0].aiType = WALKER;
-    state.enemies[0].aiState = WALKING;
+    state.enemies[0].aiState = MOVING;
     
     // Second enemy
     state.enemies[1].entityType = ENEMY;
@@ -230,9 +222,16 @@ void Initialize() {
     state.enemies[1].textureID = enemy2TextureID;
     
     state.enemies[1].position = glm::vec3(4, -2.35, 0);
-    state.enemies->speed = 1;
-    state.enemies[1].aiType = FLYER;
-    state.enemies[1].aiState = IDLE;
+    
+    state.enemies[1].movement = glm::vec3(0);
+    state.enemies[1].velocity = glm::vec3(0);
+    state.enemies[1].acceleration = glm::vec3(0, -9.81f, 0); // use this to change the speed he falls
+    state.enemies->speed = 1.0f;
+
+    state.enemies[1].jumpPower = 2.0f;
+    
+    state.enemies[1].aiType = JUMPER;
+    state.enemies[1].aiState = MOVING;
     
     state.enemies[1].height = 0.8f;
     state.enemies[1].width = 0.8f;
@@ -258,12 +257,11 @@ void Initialize() {
     state.enemies[2].position = glm::vec3(3, 1.3, 0);
     state.enemies->speed = 1;
     state.enemies[2].aiType = WAITANDGO;
-    state.enemies[2].aiState = WALKING;
+    state.enemies[2].aiState = MOVING;
     
     state.enemies[2].height = 0.8f;
     state.enemies[2].width = 0.8f;
-     
-
+    
     
 }
 
@@ -316,10 +314,10 @@ void ProcessInput() {
     }
     
     if (state.enemies[0].collidedLeft) {
-        state.enemies[0].movement.x = -1;
+        state.enemies[0].movement.x = -1.0f;
     }
     else if (state.enemies[0].collidedRight) {
-        state.enemies[0].movement.x = 1;
+        state.enemies[0].movement.x = 1.0f;
     }
     
     for (int i=0; i<ENEMY_COUNT; i++) {
@@ -433,9 +431,6 @@ void Render() {
     else if (state.player->playerType == WINNER) {
         DrawText(&program, fontTextureID, "YOU WIN", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
     }
-    
-
-    //drawLaser();
     
     SDL_GL_SwapWindow(displayWindow);
 }
