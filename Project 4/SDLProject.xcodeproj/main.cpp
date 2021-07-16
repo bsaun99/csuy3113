@@ -30,6 +30,7 @@ struct GameState {
 
 GameState state;
 GLuint fontTextureID;
+int numDeadEnemies = 0;
 
 SDL_Window* displayWindow;
 bool gameIsRunning = true;
@@ -211,7 +212,7 @@ void Initialize() {
     state.enemies[0].width = 0.7f;
     
     state.enemies[0].textureID = enemyTextureID;
-    state.enemies[0].position = glm::vec3(-3, 1.35, 0);
+    state.enemies[0].position = glm::vec3(4, 2.0, 0);
     state.enemies->speed = 1;
     state.enemies[0].aiType = WALKER;
     state.enemies[0].aiState = MOVING;
@@ -221,16 +222,16 @@ void Initialize() {
     GLint enemy2TextureID = LoadTexture("chewbacca.png");
     state.enemies[1].textureID = enemy2TextureID;
     
-    state.enemies[1].position = glm::vec3(4, -2.35, 0);
+    state.enemies[1].position = glm::vec3(3, 1.3, 0);
     
     state.enemies[1].movement = glm::vec3(0);
     state.enemies[1].velocity = glm::vec3(0);
     state.enemies[1].acceleration = glm::vec3(0, -9.81f, 0); // use this to change the speed he falls
     state.enemies->speed = 1.0f;
 
-    state.enemies[1].jumpPower = 2.0f;
+    //state.enemies[1].jumpPower = 2.0f;
     
-    state.enemies[1].aiType = JUMPER;
+    state.enemies[1].aiType = WALKER;
     state.enemies[1].aiState = MOVING;
     
     state.enemies[1].height = 0.8f;
@@ -247,16 +248,20 @@ void Initialize() {
     state.enemies[2].animUp = new int[3] {0, 1, 2}; 
     state.enemies[2].animDown = new int[3] {6, 7, 8};
     
-    state.enemies[2].animIndices = state.enemies->animRight;
+    state.enemies[2].animIndices = state.enemies->animLeft;
     state.enemies[2].animFrames = 3;
     state.enemies[2].animIndex = 0;
     state.enemies[2].animTime = 0;
     state.enemies[2].animCols = 3;
     state.enemies[2].animRows = 4;
     
-    state.enemies[2].position = glm::vec3(3, 1.3, 0);
-    state.enemies->speed = 1;
-    state.enemies[2].aiType = WAITANDGO;
+    state.enemies[2].position = glm::vec3(4, -2.35, 0);
+    state.enemies[1].movement = glm::vec3(0);
+    state.enemies[1].velocity = glm::vec3(0);
+    state.enemies[1].acceleration = glm::vec3(0, -9.81f, 0); // use this to change the speed he falls
+    state.enemies->speed = 1.0f;
+
+    state.enemies[2].aiType = WALKER;
     state.enemies[2].aiState = MOVING;
     
     state.enemies[2].height = 0.8f;
@@ -311,20 +316,6 @@ void ProcessInput() {
     
     if (glm::length(state.player->movement) > 1.0f) {
         state.player->movement = glm::normalize(state.player->movement);
-    }
-    
-    if (state.enemies[0].collidedLeft) {
-        state.enemies[0].movement.x = -1.0f;
-    }
-    else if (state.enemies[0].collidedRight) {
-        state.enemies[0].movement.x = 1.0f;
-    }
-    
-    for (int i=0; i<ENEMY_COUNT; i++) {
-        if (state.player->collidedBottom == true && state.enemies[i].collidedTop == true) {
-            state.enemies[i].isActive = false;
-            state.enemies[i].aiState = IDLE;
-        }
     }
     
 }
@@ -404,13 +395,7 @@ void Update() {
     
     accumulator = deltaTime;
 }
-/*
-void drawLaser() {
-    program.SetModelMatrix(laserMatrix);
-    glBindTexture(GL_TEXTURE_2D, laserTextureID);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-}
-*/
+
 void Render() {
     glClear(GL_COLOR_BUFFER_BIT);
     
@@ -425,11 +410,50 @@ void Render() {
     glUseProgram(program.programID);
     state.player->Render(&program);
     
+    if (state.enemies[0].collidedLeft == true) {
+        state.enemies[0].movement.x = -1.0f;
+    }
+    else if (state.enemies[0].collidedRight == true) {
+        state.enemies[0].movement.x = 1.0f;
+    }
+    
+    for (int i=0; i<ENEMY_COUNT; i++) {
+        if (state.player->CheckCollision(&state.enemies[i]) == true) {
+            if (state.player->collidedRight == true) {
+                state.player->playerState = DEAD;
+                state.player->isActive = false;
+                state.player->GameOver(&state.enemies[i]);
+            }
+            else if (state.player->collidedLeft == true) {
+                state.player->playerState = DEAD;
+                state.player->isActive = false;
+                state.player->GameOver(&state.enemies[i]);
+            }
+            else if (state.player->collidedTop == true) {
+                state.player->playerState = DEAD;
+                state.player->isActive = false;
+                state.player->GameOver(&state.enemies[i]);
+            }
+            else if (state.player->collidedBottom == true) {
+                state.enemies[i].isActive = false;
+                state.enemies[i].aiState = IDLE;
+                state.player->GameOver(&state.enemies[i]);
+            }
+        }
+        if (state.enemies[i].isActive == false) {
+            numDeadEnemies += 1;
+            if (numDeadEnemies == ENEMY_COUNT){
+                state.player->playerType = WINNER;
+            }
+            
+        }
+    }
+    
     if (state.player->playerType == LOSER) {
-        DrawText(&program, fontTextureID, "YOU LOSE", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+        DrawText(&program, fontTextureID, "YOU LOSE", 0.5f, -0.25f, glm::vec3(3.0f, 0.0f, 0));
     }
     else if (state.player->playerType == WINNER) {
-        DrawText(&program, fontTextureID, "YOU WIN", 0.5f, -0.25f, glm::vec3(0.0f, 0.0f, 0));
+        DrawText(&program, fontTextureID, "YOU WIN", 0.5f, -0.25f, glm::vec3(3.0f, 0.0f, 0));
     }
     
     SDL_GL_SwapWindow(displayWindow);

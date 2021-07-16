@@ -77,7 +77,7 @@ public:
     void DrawSpriteFromTextureAtlas(ShaderProgram *program, GLuint textureID, int index);
     void DrawText(ShaderProgram *program, GLuint fontTextureID, std::string text, float size, float spacing, glm::vec3 position);
     
-    void GameOver(Entity* player, Entity* enemy);
+    void GameOver(Entity* enemy);
     void AI(Entity* player);
     void AIWalker();
     void AIPatroller();

@@ -19,7 +19,7 @@ bool Entity::CheckCollision(Entity *other) {
     float xdist = fabs(position.x - other->position.x) - ((width + other->width) / 2.0f);
     float ydist = fabs(position.y - other->position.y) - ((height + other->height) / 2.0f);
     
-    if (xdist < 0 && ydist < 0) return true;
+    if (xdist <= 0 && ydist <= 0) return true;
     return false;
 }
 
@@ -33,12 +33,12 @@ void Entity::CheckCollisionsY(Entity *objects, int objectCount)
         {
             float ydist = fabs(position.y - object->position.y);
             float penetrationY = fabs(ydist - (height / 2.0f) - (object->height / 2.0f));
-            if (velocity.y > 0) {
+            if (velocity.y >= 0) {
                 position.y -= penetrationY;
                 velocity.y = 0;
                 collidedTop = true;
             }
-            else if (velocity.y < 0) {
+            else if (velocity.y <= 0) {
                 position.y += penetrationY;
                 velocity.y = 0;
                 collidedBottom = true;
@@ -57,12 +57,12 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount)
         {
             float xdist = fabs(position.x - object->position.x);
             float penetrationX = fabs(xdist - (width / 2.0f) - (object->width / 2.0f));
-            if (velocity.x > 0) {
+            if (velocity.x >= 0) {
                 position.x -= penetrationX;
                 velocity.x = 0;
                 collidedRight = true;
             }
-            else if (velocity.x < 0) {
+            else if (velocity.x <= 0) {
                 position.x += penetrationX;
                 velocity.x = 0;
                 collidedLeft = true;
@@ -71,19 +71,19 @@ void Entity::CheckCollisionsX(Entity *objects, int objectCount)
     }
 }
 
-void Entity::GameOver(Entity* player, Entity* enemy) {
+void Entity::GameOver(Entity* enemy) {
     switch(playerState){
         case ALIVE:
-            if (enemy->isActive == false && player->isActive == true) {
+            if (enemy->isActive == false && isActive == true) {
                 playerType = WINNER;
             }
-            else if (enemy->isActive == true && player->isActive == true) {
+            else if (enemy->isActive == true && isActive == true) {
                 playerType = IN_PROGRESS;
             }
             break;
         
         case DEAD:
-            if (player->isActive == false){
+            if (isActive == false){
                 playerType = LOSER;
             }
             break;
